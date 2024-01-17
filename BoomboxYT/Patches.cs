@@ -134,13 +134,32 @@ internal static class Patches
 
 			var component = BoomboxYTComponent.GetInstance(boombox);
 
-			if (!right)
+			if (!Config.SeparateClearBind.Value)
 			{
-				component.ImportMusic();
+				if (right)
+				{
+					return;
+				}
+
+				if (component.currentTrack == null)
+				{
+					component.ImportMusic();
+				}
+				else
+				{
+					component.ClearMusic();
+				}
 			}
 			else
 			{
-				component.ClearMusic();
+				if (!right)
+				{
+					component.ImportMusic();
+				}
+				else
+				{
+					component.ClearMusic();
+				}
 			}
 		}
 	}

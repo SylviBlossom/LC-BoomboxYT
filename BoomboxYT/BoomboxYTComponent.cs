@@ -73,7 +73,16 @@ public class BoomboxYTComponent : NetworkBehaviour
 	{
 		var toolTips = boombox.itemProperties.toolTips.ToList();
 
-		toolTips.Add("Import clipboard / clear [Q/E]");
+		if (!Config.SeparateClearBind.Value)
+		{
+			toolTips.Add(currentTrack == null ?
+				"Import from clipboard : [Q]" :
+				"Clear imported music : [Q]");
+		}
+		else
+		{
+			toolTips.Add("Import clipboard / clear [Q/E]");
+		}
 
 		if (currentTrack != null)
 		{
@@ -93,14 +102,25 @@ public class BoomboxYTComponent : NetworkBehaviour
 	{
 		if (downloadingMusic > 0)
 		{
-			HUDManager.Instance.AddChatMessage("Players are downloading music, wait a moment", "System");
+			HUDManager.Instance.AddChatMessage("Players are downloading music, wait a moment");
 			return;
 		}
 
 		var url = GUIUtility.systemCopyBuffer;
 		var player = GameNetworkManager.Instance.localPlayerController;
 
-		HUDManager.Instance.AddChatMessage($"Downloading music from {url}", "System");
+		try
+		{
+			_ = new UriBuilder(url).Uri;
+		}
+		catch (Exception)
+		{
+			HUDManager.Instance.AddChatMessage($"Invalid music url: {url}");
+
+			return;
+		}
+
+		HUDManager.Instance.AddChatMessage($"Downloading music from {url}");
 
 		downloadingMusic++;
 
@@ -116,7 +136,7 @@ public class BoomboxYTComponent : NetworkBehaviour
 
 		if (downloadingMusic > 0)
 		{
-			HUDManager.Instance.AddChatMessage("Players are downloading music, wait a moment", "System");
+			HUDManager.Instance.AddChatMessage("Players are downloading music, wait a moment");
 			return;
 		}
 
@@ -146,7 +166,7 @@ public class BoomboxYTComponent : NetworkBehaviour
 
 	public void StartDownloading(int playerId)
 	{
-		downloadingMusic = StartOfRound.Instance.connectedPlayersAmount;
+		downloadingMusic = StartOfRound.Instance.connectedPlayersAmount + 1;
 		playerStartedDownload = playerId;
 		anyFailed = false;
 	}
@@ -279,7 +299,7 @@ public class BoomboxYTComponent : NetworkBehaviour
 		{
 			if ((int)GameNetworkManager.Instance.localPlayerController.playerClientId == playerStartedDownload)
 			{
-				HUDManager.Instance.AddChatMessage("Music import finished", "System");
+				HUDManager.Instance.AddChatMessage("Music import finished");
 			}
 
 			ChangeMusicServerRpc(url);
@@ -288,7 +308,7 @@ public class BoomboxYTComponent : NetworkBehaviour
 		{
 			if ((int)GameNetworkManager.Instance.localPlayerController.playerClientId == playerStartedDownload)
 			{
-				HUDManager.Instance.AddChatMessage("Error: Music import failed", "System");
+				HUDManager.Instance.AddChatMessage("Error: Music import failed");
 			}
 		}
 	}

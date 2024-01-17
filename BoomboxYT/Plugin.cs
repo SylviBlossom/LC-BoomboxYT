@@ -24,6 +24,7 @@ public class Plugin : BaseUnityPlugin
 {
 	public static Plugin Instance { get; private set; }
 
+	public static new Config Config { get; private set; }
 	public static new ManualLogSource Logger { get; private set; }
 	public static YoutubeDL YTDL { get; private set; }
 
@@ -33,6 +34,7 @@ public class Plugin : BaseUnityPlugin
 	{
 		Instance = this;
 		Logger = base.Logger;
+		Config = new(base.Config);
 
 		new Thread(() => SetupFiles()).Start();
 
@@ -104,7 +106,7 @@ public class Plugin : BaseUnityPlugin
 
 	private static void __DownloadBoomboxMusic(string url, BoomboxYTComponent boomboxComponent)
 	{
-		var task = DownloadClip(url);
+		var task = DownloadClipFromYT(url);
 
 		task.Wait();
 
@@ -116,13 +118,13 @@ public class Plugin : BaseUnityPlugin
 		};
 	}
 
-	private static async Task<AudioClip> DownloadClip(string url)
+	private static async Task<AudioClip> DownloadClipFromYT(string url)
 	{
-		Logger.LogInfo($"Downloading audio from {url}");
+		Logger.LogInfo($"Downloading audio from url: {url}");
 
 		var result = await YTDL.RunAudioDownload(url, format: AudioConversionFormat.Vorbis);
 
-		Logger.LogInfo($"Audio downloaded (Success: {result})");
+		Logger.LogInfo($"Audio downloaded (Success: {result.Success})");
 
 		if (!result.Success)
 		{
@@ -131,13 +133,28 @@ public class Plugin : BaseUnityPlugin
 
 		var fullPath = Path.GetFullPath(result.Data);
 
-		// https://discussions.unity.com/t/load-audioclip-from-folder-on-computer-into-game-in-runtime/209967/2
-
-		AudioClip clip = null;
-
 		Logger.LogInfo($"Creating audio clip");
 
-		using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(fullPath, AudioType.OGGVORBIS))
+		var clip = await DownloadClip(fullPath, AudioType.OGGVORBIS);
+
+		if (clip != null)
+		{
+			Logger.LogInfo("Successfully imported audio");
+		}
+		else
+		{
+			Logger.LogInfo("Audio import failed");
+		}
+
+		return clip;
+	}
+
+	// https://discussions.unity.com/t/load-audioclip-from-folder-on-computer-into-game-in-runtime/209967/2
+	private static async Task<AudioClip> DownloadClip(string path, AudioType audioType = AudioType.UNKNOWN)
+	{
+		AudioClip clip = null;
+
+		using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(path, audioType))
 		{
 			uwr.SendWebRequest();
 
@@ -160,8 +177,6 @@ public class Plugin : BaseUnityPlugin
 				Logger.LogError(err);
 			}
 		}
-
-		Logger.LogInfo($"Done all");
 
 		return clip;
 	}
