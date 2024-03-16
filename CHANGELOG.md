@@ -1,3 +1,6 @@
+### v1.1.1
+- Fix Remnants compatibility
+
 ### v1.1.0
 - Change controls to only use Q to import and clear
 - Old behaviour (Q to import, E to clear) can be toggled in the config

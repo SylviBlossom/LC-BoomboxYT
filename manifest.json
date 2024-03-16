@@ -1,6 +1,6 @@
 {
     "name": "BoomboxYT",
-    "version_number": "1.1.0",
+    "version_number": "1.1.1",
     "website_url": "https://github.com/SylviBlossom/LC-BoomboxYT",
     "description": "Simple mod to play YouTube links on the Boombox.",
     "dependencies": [
