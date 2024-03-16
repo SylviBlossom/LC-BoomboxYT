@@ -12,16 +12,25 @@ namespace BoomboxYT;
 
 internal static class Patches
 {
-	[HarmonyPatch(typeof(StartOfRound), "Awake")]
-	[HarmonyPostfix]
-	private static void StartOfRound_Awake(StartOfRound __instance)
+	[HarmonyPatch(typeof(StartOfRound), "Start")]
+	[HarmonyPrefix]
+	private static void StartOfRound_Start(StartOfRound __instance)
 	{
-		Plugin.Logger.LogInfo("StartOfRound Awake moment");
+		var boomboxes = __instance.allItemsList.itemsList.Where(item => item.spawnPrefab != null && item.spawnPrefab.GetComponent<BoomboxItem>());
 
-		var boombox = __instance.allItemsList.itemsList.First(item => item.itemName == "Boombox");
+		foreach (var item in boomboxes)
+		{
+			var itemIndex = __instance.allItemsList.itemsList.IndexOf(item);
+			Plugin.Logger.LogInfo($"Adding BoomboxYT component to \"{item.name}\" ID:{itemIndex}");
 
-		boombox.spawnPrefab.AddComponent<BoomboxYTComponent>();
-		boombox.syncInteractLRFunction = false;
+			if (item.spawnPrefab.GetComponent<BoomboxYTComponent>())
+			{
+				continue;
+			}
+
+			item.spawnPrefab.AddComponent<BoomboxYTComponent>();
+			item.syncInteractLRFunction = false;
+		}
 	}
 
 	[HarmonyPatch(typeof(PlayerControllerB), "OnEnable")]

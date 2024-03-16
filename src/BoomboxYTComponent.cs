@@ -100,6 +100,12 @@ public class BoomboxYTComponent : NetworkBehaviour
 
 	public void ImportMusic()
 	{
+		if (!IsSpawned)
+		{
+			HUDManager.Instance.AddChatMessage("Boombox error");
+			return;
+		}
+
 		if (downloadingMusic > 0)
 		{
 			HUDManager.Instance.AddChatMessage("Players are downloading music, wait a moment");
@@ -134,6 +140,12 @@ public class BoomboxYTComponent : NetworkBehaviour
 			return;
 		}
 
+		if (!IsSpawned)
+		{
+			HUDManager.Instance.AddChatMessage("Boombox error");
+			return;
+		}
+
 		if (downloadingMusic > 0)
 		{
 			HUDManager.Instance.AddChatMessage("Players are downloading music, wait a moment");
@@ -147,6 +159,12 @@ public class BoomboxYTComponent : NetworkBehaviour
 	{
 		if (currentTrack == null)
 		{
+			return;
+		}
+
+		if (!IsSpawned)
+		{
+			HUDManager.Instance.AddChatMessage("Boombox error");
 			return;
 		}
 
@@ -315,6 +333,6 @@ public class BoomboxYTComponent : NetworkBehaviour
 
 	public static BoomboxYTComponent GetInstance(BoomboxItem boombox)
 	{
-		return boombox.gameObject.GetComponent<BoomboxYTComponent>();
+		return boombox.gameObject.GetComponent<BoomboxYTComponent>() ?? boombox.gameObject.AddComponent<BoomboxYTComponent>();
 	}
 }
