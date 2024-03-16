@@ -8,6 +8,7 @@ mkdir "%SolutionDir%package"
 
 :: Copy all files needed for the package to the package directory
 copy /Y "%TargetDir%%ProjectName%.dll" "%SolutionDir%package\%ProjectName%.dll"
+copy /Y "%TargetDir%YoutubeDLSharp.dll" "%SolutionDir%package\YoutubeDLSharp.dll"
 copy /Y "%SolutionDir%manifest.json" "%SolutionDir%package\manifest.json"
 copy /Y "%SolutionDir%README.md" "%SolutionDir%package\README.md"
 copy /Y "%SolutionDir%CHANGELOG.md" "%SolutionDir%package\CHANGELOG.md"
