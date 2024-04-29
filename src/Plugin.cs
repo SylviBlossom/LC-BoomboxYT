@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using CessilCellsCeaChells.CeaChore;
 using GameNetcodeStuff;
 using HarmonyLib;
 using System;
@@ -15,6 +16,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Options;
+
+[assembly: RequiresMethod(typeof(BoomboxItem), "Awake", typeof(void))]
 
 namespace BoomboxYT;
 

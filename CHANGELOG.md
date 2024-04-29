@@ -1,3 +1,6 @@
+### v1.1.2
+- Fix the mod occasionally breaking in multiplayer (now depends on [CessilCellsCeaChells](https://thunderstore.io/c/lethal-company/p/www_Day_Dream/CessilCellsCeaChells/))
+
 ### v1.1.1
 - Fix Remnants compatibility
 

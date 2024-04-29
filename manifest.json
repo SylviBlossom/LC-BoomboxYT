@@ -1,10 +1,11 @@
 {
     "name": "BoomboxYT",
-    "version_number": "1.1.1",
+    "version_number": "1.1.2",
     "website_url": "https://github.com/SylviBlossom/LC-BoomboxYT",
     "description": "Simple mod to play YouTube links on the Boombox.",
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100",
-        "Rune580-LethalCompany_InputUtils-0.6.3"
+        "Rune580-LethalCompany_InputUtils-0.6.3",
+        "www_Day_Dream-CessilCellsCeaChells-0.1.5"
     ]
 }
